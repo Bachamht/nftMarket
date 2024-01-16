@@ -7,7 +7,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 
 
 interface IERC721 {
-        function safeTransferFrom(address from, address to, uint256 tokenId) external;
+        function transferFrom(address from, address to, uint256 tokenId) external;
         function ownerOf(uint256 tokenId) external returns(address);
         function approve(address to, uint256 tokenId) external;
 
@@ -67,10 +67,8 @@ contract NFTMarket {
     function buyNFT(uint256 tokenID, uint256 amount) public isOnSelling(tokenID) NotEnough(amount, tokenID) {
        
         address seller = IERC721(nftAddr).ownerOf(tokenID);
-        IERC20(tokenPool).approve(seller, amount);
         IERC20(tokenPool).safeTransferFrom(msg.sender, seller, amount);
-        IERC721(nftAddr).approve(msg.sender, tokenID);
-        IERC721(nftAddr).safeTransferFrom(seller, msg.sender, tokenID) ;
+        IERC721(nftAddr).transferFrom(seller, msg.sender, tokenID) ;
         emit BuySuccess(msg.sender, tokenID);
 
     }
