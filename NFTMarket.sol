@@ -19,16 +19,21 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 
 interface IERC721 {
         function safeTransferFrom(address from, address to, uint256 tokenId) external;
-        function ownerOf(uint256 tokenId) external;
+        function ownerOf(uint256 tokenId) external returns(address);
 
 }
 contract NFTMarket {
 
     using SafeERC20 for IERC20;
+
     event BuySuccess(address buyer, uint tokenID);
+
     error MoneyNotEnough(uint amount);
+    error NotOwner(address msgSender, uint tokenID);
+    error NotSelling(uint256 tokenID);
 
     mapping(uint256 => uint256) price;
+    mapping(uint256 => bool) isListed;
 
     address private nftAddr;
     address private tokenPool; 
@@ -38,23 +43,42 @@ contract NFTMarket {
         tokenPool = TokenPool;
     }
 
-    modifier NotEnough(uint amount, uint tokenID) {
+    modifier NotEnough(uint256 amount, uint256 tokenID) {
         if (amount < price[tokenID]) revert MoneyNotEnough(amount);
         _;
     }
 
+    modifier OnlyOwner(uint256 tokenID){
+        address nftOwner = IERC721(nftAddr).ownerOf(tokenID);
+        if (msg.sender != nftOwner) revert NotOwner(msg.sender, tokenID);
+        _;
+    }
+
+    //判断该nft是否在售
+    modifier isOnSelling(uint256 tokenID){
+        if (isListed[tokenID] == false) revert NotSelling(tokenID);
+        _;
+    }
+
     //用户上架出售nft
-    function sellNFTs(uint[] memory list, uint[] memory prices) public {
-        for(uint i = 0; i < list.length; i++){
-            price[list[i]] = prices[i];
-        }
+    function sellNFTs(uint256 tokenID, uint256 amount) public OnlyOwner(tokenID) {
+        price[tokenID] = amount;
+        isListed[tokenID] = true;
+
     }
     
-    //用户买nft
-    function buyNFT(uint tokenID, uint amount) public NotEnough(amount){
+    //用户下架nft
+    function removeNFT(uint tokenID) public OnlyOwner(tokenID) {
+        isListed[tokenID] = false;
+    }
 
-        IERC20(tokenPool).safeTransferFrom(msg.sender, address(this), amount);
+    //用户买nft
+    function buyNFT(uint256 tokenID, uint256 amount) public isOnSelling(tokenID) NotEnough(amount, tokenID) {
+       
+        address sellerOwner = IERC721(nftAddr).ownerOf(tokenID);
+        IERC20(tokenPool).safeTransferFrom(msg.sender, sellerOwner, amount);
         address preOwner = IERC721(nftAddr).ownerOf(tokenID);
+        IERC721(nftAddr).approve(msg.sender, tokenID);
         IERC721(nftAddr).safeTransferFrom(preOwner, msg.sender, tokenID) ;
         emit BuySuccess(msg.sender, tokenID);
 
