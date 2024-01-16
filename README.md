@@ -46,6 +46,5 @@ NFT部署后opensea上查看：
 
 
 添加功能tokensRecieved和tokenTransferWithCallback，用户直接购买NFT：
-![image]()
-
+![image](https://github.com/Bachamht/nftMarket/blob/main/images/cdc2e0792ae630193e8a9cf54dfc6298.png)
 
