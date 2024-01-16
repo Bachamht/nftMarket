@@ -30,13 +30,15 @@ contract MyNFT is ERC721URIStorage{
     constructor() ERC721("LuoZiYi", "LZY"){
         administrator = msg.sender;
     }
-
+    
+    //铸造nft
     function mint(address to, string memory tokenURI) public onlyAdministrator{
-        uint256 tokenId = tokenId();
-        _mint(to,  tokenId);
-        _setTokenURI(tokenId, tokenURI);
+        uint256 tokenID = tokenId();
+        _safeMint(to, tokenID);
+        _setTokenURI(tokenID, tokenURI);
     }
-
+    
+    //tokenID 每次自增1
     function tokenId() internal returns (uint) {
         nounce = nounce + 1;
         return nounce;
@@ -47,24 +49,3 @@ contract MyNFT is ERC721URIStorage{
 }
 
 
-/*编写元数据文件(JSON)
-
-{
-    "title": “ZiYi's Frist NFT",
-    "description": “the first work ZiYi created”,
-    "image": "ipfs://Qmdt6K59JBmz24iPh7FkU1Z1m3j8Uzbhc4kj97kBdfTJ8i",
-    "attributes": [
-    {
-    "index": "序号",
-    "value": "0000000000001"
-    },
-    {
-    "type": "昵称",
-    "value": "creativity"
-    }
-    ],
-    "version": “1"
-}
-
-
-*/

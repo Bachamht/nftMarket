@@ -1,0 +1,17 @@
+{
+    "title": "ZiYi's Frist NFT",
+    "description": "the first work ZiYi created",
+    "image": "ipfs://QmSePxtKSxrXf3PK2p9e5NMPUkHaKBQv7GoSseAuySQjDd",
+    "attributes": [
+    {
+    "index": "序号",
+    "value": "0000000000001"
+    },
+    {
+    "type": "昵称",
+    "value": "creativity"
+    }
+    ],
+    "version": "1"
+}
+
