@@ -78,6 +78,13 @@ contract NFTMarket {
         return IERC721(nftAddr).ownerOf(tokenID);
     }
 
+    //对用户直接转进地址的代币进行处理
+    function tokensRecieved(address buyer, uint amount, uint tokenID) external isOnSelling(tokenID) {
+            
+            address seller = IERC721(nftAddr).ownerOf(tokenID);
+            IERC721(nftAddr).transferFrom(seller, buyer, tokenID);
+            emit BuySuccess(msg.sender, tokenID);
 
+        }
 
 }

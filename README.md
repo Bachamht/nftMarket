@@ -45,3 +45,7 @@ NFT部署后opensea上查看：
 
 
 
+添加功能tokensRecieved和tokenTransferWithCallback，用户直接购买NFT：
+![image]()
+
+
