@@ -79,6 +79,12 @@ contract NFTMarket {
 
     }
 
+    //买家查看nft价格
+    function viewPrice(uint256 tokenID) public view returns(uint256){
+        return price[tokenID];
+    }
+
+
     //用户查询nft的主人
     function viewOwner(uint256 tokenID) public returns(address) {
         return IERC721(nftAddr).ownerOf(tokenID);
