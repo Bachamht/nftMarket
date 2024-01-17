@@ -46,7 +46,13 @@ contract NFTMarket {
     }
 
     //判断该nft是否在售
-    modifier isOnSelling(uint256 tokenID){
+    modifier isOnSelling(bytes memory data){
+        uint256 tokenID = bytesToUint(data);
+        if (isListed[tokenID] == false) revert NotSelling(tokenID);
+        _;
+    }
+
+    modifier isOnSelling2(uint tokenID){
         if (isListed[tokenID] == false) revert NotSelling(tokenID);
         _;
     }
@@ -64,7 +70,7 @@ contract NFTMarket {
     }
 
     //用户买nft
-    function buyNFT(uint256 tokenID, uint256 amount) public isOnSelling(tokenID) NotEnough(amount, tokenID) {
+    function buyNFT(uint256 tokenID, uint256 amount) public isOnSelling2(tokenID) NotEnough(amount, tokenID) {
        
         address seller = IERC721(nftAddr).ownerOf(tokenID);
         IERC20(tokenPool).safeTransferFrom(msg.sender, seller, amount);
@@ -79,13 +85,21 @@ contract NFTMarket {
     }
 
     //对用户直接转进地址的代币进行处理
-    function tokensRecieved(address buyer, uint amount, uint tokenID) external isOnSelling(tokenID) {
+    function tokensRecieved(address from, address to, uint amount, bytes memory data) external isOnSelling(data) {
             
+            uint256 tokenID = bytesToUint(data);
             address seller = IERC721(nftAddr).ownerOf(tokenID);
-            IERC721(nftAddr).transferFrom(seller, buyer, tokenID);
+            IERC721(nftAddr).transferFrom(seller, from, tokenID);
             IERC20(tokenPool).transfer(seller, amount);
             emit BuySuccess(msg.sender, tokenID);
-
         }
-
+    
+    //bytes to uint256
+    function bytesToUint(bytes memory b) internal returns (uint256){
+        uint256 number;
+        for(uint i= 0; i<b.length; i++){
+            number = number + uint8(b[i])*(2**(8*(b.length-(i+1))));
+        }
+        return  number;
+    }
 }

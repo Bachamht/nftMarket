@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
 
-interface IBank {
-        function tokensRecieved(address user, uint amount, uint tokenID) external;
+interface ItokenRecieved {
+     function tokensRecieved(address from, address to, uint amount, bytes memory data) external; 
 } 
 
 contract btcToken is ERC20{
@@ -30,11 +30,11 @@ contract btcToken is ERC20{
         emit MintSuccess(receiver, amount);
    }
    
-   //用户直接购买NFT
-   function tokenTransferWithCallback(address nftMarkket, uint amount, uint tokenID) public{
-        _transfer(msg.sender, nftMarkket, amount);
-        IBank(nftMarkket).tokensRecieved(msg.sender, amount, tokenID);
-        emit transferSuccess(msg.sender, nftMarkket, amount);
+     
+   function tokenTransferWithCallback(address to, uint amount, bytes memory data) public{
+        _transfer(msg.sender, to, amount);
+        ItokenRecieved(to).tokensRecieved(msg.sender, to, amount, data);
+        emit transferSuccess(msg.sender, to, amount);
    }
 
 
