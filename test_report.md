@@ -48,7 +48,7 @@
 ```
 
 测试成功：
-![image]()
+![image](https://github.com/Bachamht/nftMarket/blob/main/images/testImages/9bc208bc8e533228b8f4dde913cbc01c.png)
 
 
 
@@ -129,7 +129,7 @@ function test_buy() public{
 
 测试通过：
 
-![image]()
+![image](https://github.com/Bachamht/nftMarket/blob/main/images/testImages/58183162f37e5386776dd3ba5fd38c1c.png)
 
 
 
@@ -209,5 +209,5 @@ forge test --match-contract NFTMarketTest --match-test test_tokenRecieved  -vvvv
 
 
 测试成功：
-![image]()
+![image](https://github.com/Bachamht/nftMarket/blob/main/images/testImages/18ae3b1131ead898a1a936428d42841d.png)
 
