@@ -83,6 +83,7 @@ contract NFTMarket {
             
             address seller = IERC721(nftAddr).ownerOf(tokenID);
             IERC721(nftAddr).transferFrom(seller, buyer, tokenID);
+            IERC20(tokenPool).transfer(seller, amount);
             emit BuySuccess(msg.sender, tokenID);
 
         }
